@@ -50,6 +50,11 @@ class TransactionsRepository {
   }
 
   public create({ title, value, type }: CreateTransaction): Transaction {
+    if (type === 'outcome') {
+      const balance = this.getBalance();
+      if (balance.total < value)
+        throw Error('Invalid Transaction, not enough money');
+    }
     const transaction = new Transaction({ title, value, type });
     this.transactions.push(transaction);
     return transaction;
